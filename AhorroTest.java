@@ -41,7 +41,11 @@ public class AhorroTest
     }
     
     @Test
-    public void test(){
-    
+    public void test1(){
+        AppAhorro cuenta = new AppAhorro(1.8, 2.0);
+        double res = cuenta.obteneRedondeo();
+        assertEquals(0.2, res, 0.0001); // es un delta de comparacion de doubles
+        
     }
+        
 }
