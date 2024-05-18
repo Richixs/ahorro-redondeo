@@ -1,31 +1,41 @@
-
-/**
- * Write a description of class AppAhorro here.
- * 
- * @author (your name) 
- * @version (a version number or a date)
- */
-public class AppAhorro{
-    double montoPagado;
-    double costoProducto;
-    double ahorro;
-    public AppAhorro(double costoProducto, double montoPagado){
-        this.montoPagado   = montoPagado;
-        this.costoProducto = costoProducto;        
+import java.util.ArrayList;
+public class AppAhorro{       
+    
+    private double ahorroTotal;
+    ArrayList<String> metas; 
+    ArrayList<String> montoMeta;
+    
+    public AppAhorro(){
+        metas = new ArrayList<String>();
+        montoMeta = new ArrayList<String>();
     }
     
-    public AppAhorro(double costoProducto){
-        this.costoProducto = costoProducto ;
-        this.montoPagado   = (int)Math.ceil(costoProducto);        
-    }
-    
-    public double obteneRedondeo(){
-        double redondeo = montoPagado - costoProducto;
-        ahorro += redondeo;
-        return redondeo; 
-    }  
-    
-    public double getAhorro(){
+    public double obtenerAhorro(double costoProducto){        
+        double montoPagado = (int)Math.ceil(costoProducto);
+        double ahorro;        
+        ahorro = (double)Math.round((montoPagado - costoProducto) * 100d) / 100d; 
+        this.ahorroTotal += ahorro;
         return ahorro;
+    }
+    
+    public double obtenerTotalAhorrado(){         
+        return ahorroTotal;
+    }
+    
+    public void crearMeta(String meta){
+        metas.add(meta);
+    }
+    
+    public ArrayList<String> obtenerMetas(){
+        return metas;
+    }
+    
+    public ArrayList<String> obtenerMontoMeta(){
+        return montoMeta;
+    } 
+    
+    public void definirMontoMeta(String meta, double monto){
+        monto = (double)Math.round(monto * 100d) / 100d;
+        montoMeta.add(meta + ", " +  monto);        
     }
 }
