@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 public class AppAhorro{       
     
     private Ahorro ahorroTotal;
