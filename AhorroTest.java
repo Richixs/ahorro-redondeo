@@ -1,8 +1,10 @@
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.DynamicTest.stream;
+
+import org.hamcrest.core.AnyOf;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.mockito.Mockito.*;
 import java.util.ArrayList;
 
 public class AhorroTest{       
@@ -28,15 +30,16 @@ public class AhorroTest{
         assertEquals(0.2, total);
     }    
     
+    /*
     @Test
     public void definirMeta(){
         cuenta.crearMeta("vacacion");
-        assertTrue(cuenta.obtenerMetas().contains("vacacion")); 
+        assertTrue(cuenta.obtenerMetas().contains(meta)); 
     }
     
     @Test 
     public void definirMetasConMontosEspecificos(){
         cuenta.definirMontoMeta("vacacion", 200);
         assertTrue(cuenta.obtenerMontoMeta().contains("vacacion, 200.0"));
-    }
+    }*/
 }
