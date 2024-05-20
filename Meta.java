@@ -1,13 +1,13 @@
 public class Meta{
     
     private String nombre;
-    private double ahorrado;
+    private Ahorro ahorrado;
     private String montoMeta;
     private boolean metaCompletado;
 
     public Meta(String nombre){
         this.nombre = nombre;
-        this.ahorrado = 0;
+        this.ahorrado = new Ahorro();
         this.montoMeta = "Monto objetivo no asignado.";
         this.metaCompletado = false;
     }
@@ -22,11 +22,11 @@ public class Meta{
     }
 
     public double obtenerAhorrado(){
-        return this.ahorrado;
+        return this.ahorrado.obtenerAhorrado();
     }
 
-    public void sumarAhorro(double ahorroRedondeo) {
-        this.ahorrado += ahorroRedondeo;
+    public void sumarAhorro(double monto) {
+        ahorrado.agregarAhorro(monto);
     }
 
     public String obtenerMontoMeta(){
