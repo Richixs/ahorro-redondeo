@@ -27,7 +27,7 @@ public class AhorroTest{
         double total = cuenta.obtenerTotalAhorrado();
         assertEquals(0.2, total);
     }    
-    
+    //clase meta
     @Test
     public void definirMeta(){
         cuenta.crearMeta("vacacion");
@@ -36,7 +36,8 @@ public class AhorroTest{
     
     @Test 
     public void definirMetasConMontosEspecificos(){
-        cuenta.definirMontoMeta("vacacion", 200);
+        cuenta.definirMontoMeta("vacacion", 200.0);
         assertTrue(cuenta.obtenerMontoMeta().contains("vacacion, 200.0"));
     }
+        
 }
