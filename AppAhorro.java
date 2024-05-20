@@ -2,11 +2,13 @@ import java.util.ArrayList;
 public class AppAhorro{       
     
     private Ahorro ahorroTotal;
+    private ManejadorArchivos manejadorArchivos;
     ArrayList<Meta> metas; 
     
     public AppAhorro(){
         ahorroTotal = new Ahorro();
         metas = new ArrayList<Meta>();
+        manejadorArchivos = new ManejadorArchivos();
     }
     
     // Ahorro
@@ -27,6 +29,11 @@ public class AppAhorro{
     public void crearMeta(String nombre){
         Meta meta = new Meta(nombre);
         metas.add(meta);
+        manejadorArchivos.crearArchivo(nombre);
+        manejadorArchivos.añadirTexto(nombre, obtenerMeta(nombre).obtenerNombreMeta());
+        manejadorArchivos.añadirTexto(nombre, String.valueOf(obtenerMeta(nombre).obtenerAhorrado()));
+        manejadorArchivos.añadirTexto(nombre, obtenerMeta(nombre).obtenerMontoMeta());
+        manejadorArchivos.añadirTexto(nombre, String.valueOf(obtenerMeta(nombre).obtenerMetaCompletado()));
     }
 
     public void crearMeta(String nombre, double montoMeta) {
