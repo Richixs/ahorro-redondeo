@@ -2,13 +2,11 @@ import java.util.ArrayList;
 public class AppAhorro{       
     
     private Ahorro ahorroTotal;
-    private ManejadorArchivos manejadorArchivos;
-    ArrayList<Meta> metas; 
+    ArrayList<Meta> metas;
     
     public AppAhorro(){
         ahorroTotal = new Ahorro();
         metas = new ArrayList<Meta>();
-        manejadorArchivos = new ManejadorArchivos();
     }
     
     // Ahorro
@@ -20,7 +18,7 @@ public class AppAhorro{
         return ahorro;
     }
     
-    public double obtenerTotalAhorrado(){         
+    public double obtenerTotalAhorrado(){
         return ahorroTotal.obtenerAhorrado();
     }
 
@@ -29,11 +27,6 @@ public class AppAhorro{
     public void crearMeta(String nombre){
         Meta meta = new Meta(nombre);
         metas.add(meta);
-        manejadorArchivos.crearArchivo(nombre);
-        manejadorArchivos.añadirTexto(nombre, obtenerMeta(nombre).obtenerNombreMeta());
-        manejadorArchivos.añadirTexto(nombre, String.valueOf(obtenerMeta(nombre).obtenerAhorrado()));
-        manejadorArchivos.añadirTexto(nombre, obtenerMeta(nombre).obtenerMontoMeta());
-        manejadorArchivos.añadirTexto(nombre, String.valueOf(obtenerMeta(nombre).obtenerMetaCompletado()));
     }
 
     public void crearMeta(String nombre, double montoMeta) {
@@ -43,8 +36,7 @@ public class AppAhorro{
 
     public void definirMontoMeta(String nombreMeta, double monto){
         try {
-            boolean metaExiste = obtenerMeta(nombreMeta).obtenerNombreMeta().equals(nombreMeta);
-            if (metaExiste) {
+            if (existeMeta(nombreMeta)) {
                 obtenerMeta(nombreMeta).agregarMontoMeta(monto);
             } else {
                 throw new Exception("no mi pana, no tienes esa meta asignada.");
@@ -64,17 +56,18 @@ public class AppAhorro{
 
     // Transaccion
 
-    public void transaccion(double costo, String nombreMeta) {
+    public void asignarAhorroDirecto(double costo, String nombreMeta) {
         double ahorroTransaccion = obtenerAhorro(costo);
+        this.ahorroTotal.agregarAhorro(ahorroTransaccion);
         obtenerMeta(nombreMeta).sumarAhorro(ahorroTransaccion);
-        ahorroTotal.agregarAhorro(ahorroTransaccion);
     }
 
-    public void transaccion(double costo, String nombreMeta, int porcentaje) {
+    public void asignarPorcentajeAhorro(double costo, String nombreMeta, int porcentaje) {
         try {
-            if (porcentaje > 0 && porcentaje < 100) {
+            if (verificarPorcentaje(porcentaje)) {
                 double ahorroTransaccion = obtenerAhorro(costo);
-                double metaAhorro = (porcentaje*ahorroTransaccion)/100;
+                this.ahorroTotal.agregarAhorro(ahorroTransaccion);
+                double metaAhorro = obtenerPorCiento(ahorroTransaccion, porcentaje);
                 obtenerMeta(nombreMeta).sumarAhorro(metaAhorro);
                 ahorroTransaccion -= metaAhorro;
                 double ahorroRepartir = ahorroTransaccion/(obtenerMetas().size()-1);
@@ -84,7 +77,7 @@ public class AppAhorro{
                     }
                 }
             } else if (porcentaje == 100) {
-                transaccion(costo, nombreMeta);
+                asignarAhorroDirecto(costo, nombreMeta);
             } else {
                 throw new IllegalArgumentException("Chale no se va a poder...");
             }
@@ -93,12 +86,45 @@ public class AppAhorro{
         }
     }
 
-    public void transaccion(double costo) {
+    public void asignarPorcentajeEquitativo(double costo) {
         double ahorroTransaccion = obtenerAhorro(costo);
+        this.ahorroTotal.agregarAhorro(ahorroTransaccion);
         double ahorroRepartir = ahorroTransaccion/(obtenerMetas().size());
-        ahorroTotal.agregarAhorro(ahorroTransaccion);
         for (Meta meta : obtenerMetas()) {
             meta.sumarAhorro(ahorroRepartir);
         }
+    }
+
+    public void depositoDirecto(String nombreMeta, double montoDeposito) {
+        if (montoDeposito > 0 && existeMeta(nombreMeta)) {
+            obtenerMeta(nombreMeta).sumarAhorro(montoDeposito);
+        } else {
+            throw new IllegalArgumentException("Parametros introducidos no validos");
+        }
+    }
+
+    public void depositoDirectoPorPorcentaje(String nombreMeta, int porcentaje) {
+        if (existeMeta(nombreMeta) && verificarPorcentaje(porcentaje) && verificarMontoMeta(nombreMeta)) {
+            obtenerMeta(nombreMeta).sumarAhorro(obtenerPorCiento(
+            Double.valueOf(obtenerMeta(nombreMeta).obtenerMontoMeta()), porcentaje));
+        } else {
+            throw new IllegalArgumentException("Parametros introducidos no validos");
+        }
+    }
+
+    private boolean existeMeta(String nombreMeta) {
+        return obtenerMeta(nombreMeta).obtenerNombreMeta().equals(nombreMeta);
+    }
+
+    private boolean verificarPorcentaje(int porcentaje) {
+        return porcentaje > 0 && porcentaje < 100;
+    }
+
+    private double obtenerPorCiento(double monto, int porcentaje) {
+        return (monto*porcentaje)/100;
+    }
+
+    private boolean verificarMontoMeta(String nombreMeta) {
+        return !obtenerMeta(nombreMeta).obtenerMontoMeta().equals("Monto objetivo no asignado.");
     }
 }

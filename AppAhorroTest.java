@@ -1,5 +1,4 @@
 import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -14,14 +13,14 @@ public class AppAhorroTest{
     }
     
     @Test
-    public void redondearCompra(){      
+    public void redondearCompra(){
         double res = cuenta.obtenerAhorro(1.8);
         assertEquals(0.2, res);        
     }
     
     @Test 
     public void totalAhorrado(){        
-        cuenta.transaccion(1.8);
+        cuenta.asignarPorcentajeEquitativo(1.8);
         double total = cuenta.obtenerTotalAhorrado();
         assertEquals(0.2, total);
     }    
@@ -40,41 +39,55 @@ public class AppAhorroTest{
     }
 
     @Test
-    public void depositarMetaEspecifica() {
+    public void asignarAhorroDirecto() {
         cuenta.crearMeta("vacacion");
         cuenta.crearMeta("regalo-cumpleanios");
         assertEquals(0, cuenta.obtenerMeta("vacacion").obtenerAhorrado());
         assertEquals(0, cuenta.obtenerMeta("regalo-cumpleanios").obtenerAhorrado());
-        cuenta.transaccion(6.5, "regalo-cumpleanios");
+        cuenta.asignarAhorroDirecto(6.5, "regalo-cumpleanios");
         assertEquals(0, cuenta.obtenerMeta("vacacion").obtenerAhorrado());
         assertEquals(0.5, cuenta.obtenerMeta("regalo-cumpleanios").obtenerAhorrado());
     }
 
     @Test
-    public void depositarMetaPorcentaje() {
+    public void asignarPorcentajeAhorro() {
         cuenta.crearMeta("vacacion");
         cuenta.crearMeta("regalo-cumpleanios");
         cuenta.crearMeta("chaifon");
         assertEquals(0, cuenta.obtenerMeta("vacacion").obtenerAhorrado());
         assertEquals(0, cuenta.obtenerMeta("regalo-cumpleanios").obtenerAhorrado());
         assertEquals(0, cuenta.obtenerMeta("chaifon").obtenerAhorrado());
-        cuenta.transaccion(6.5, "chaifon", 50);
+        cuenta.asignarPorcentajeAhorro(6.5, "chaifon", 50);
         assertEquals(0.125, cuenta.obtenerMeta("vacacion").obtenerAhorrado());
         assertEquals(0.125, cuenta.obtenerMeta("regalo-cumpleanios").obtenerAhorrado());
         assertEquals(0.25, cuenta.obtenerMeta("chaifon").obtenerAhorrado());
     }
 
     @Test
-    public void depositarMetas() {
+    public void asignarPorcentajeEquitativoMetas() {
         cuenta.crearMeta("vacacion");
         cuenta.crearMeta("cumpleanios");
         cuenta.crearMeta("chaifon");
         assertEquals(0, cuenta.obtenerMeta("vacacion").obtenerAhorrado());
         assertEquals(0, cuenta.obtenerMeta("cumpleanios").obtenerAhorrado());
         assertEquals(0, cuenta.obtenerMeta("chaifon").obtenerAhorrado());
-        cuenta.transaccion(12.1);
+        cuenta.asignarPorcentajeEquitativo(12.1);
         assertEquals(0.3, cuenta.obtenerMeta("vacacion").obtenerAhorrado());
         assertEquals(0.3, cuenta.obtenerMeta("cumpleanios").obtenerAhorrado());
         assertEquals(0.3, cuenta.obtenerMeta("chaifon").obtenerAhorrado());
+    }
+    
+    @Test
+    public void depositoDirectoMeta() {
+        cuenta.crearMeta("vacacion");
+        cuenta.depositoDirecto("vacacion", 50.0);
+        assertEquals(50.0, cuenta.obtenerMeta("vacacion").obtenerAhorrado());
+    }
+
+    @Test
+    public void depositoDirectoPorPorcentaje() {
+        cuenta.crearMeta("vacacion", 1000);
+        cuenta.depositoDirectoPorPorcentaje("vacacion", 50);
+        assertEquals(500, cuenta.obtenerMeta("vacacion").obtenerAhorrado());
     }
 }
