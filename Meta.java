@@ -17,11 +17,14 @@ public class Meta{
         this.montoMeta = String.valueOf(montoMeta);
     }
 
-    public Meta(String nombre, String montoMeta, Ahorro ahorrado, boolean metaCompletado) {
+    public Meta(String nombre, String montoMeta, Ahorro ahorrado) {
         this(nombre);
         this.montoMeta = montoMeta;
         this.ahorrado = ahorrado;
-        this.metaCompletado = metaCompletado;
+        boolean tieneMontoMeta = !montoMeta.equals("Monto objetivo no asignado");
+        if (tieneMontoMeta) {
+            this.metaCompletado = this.ahorrado.obtenerAhorrado() >= Double.valueOf(this.montoMeta);
+        }
     }
     
     public String obtenerNombreMeta(){

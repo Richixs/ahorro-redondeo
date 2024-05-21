@@ -11,8 +11,6 @@ public class AppAhorro{
         metas = new ArrayList<Meta>();
     }
     
-    // Ahorro
-
     public double obtenerAhorro(double costoProducto){        
         double montoPagado = (int)Math.ceil(costoProducto);
         double ahorro;        
@@ -23,8 +21,6 @@ public class AppAhorro{
     public double obtenerTotalAhorrado(){
         return ahorroTotal.obtenerAhorrado();
     }
-
-    // META
 
     public void crearMeta(String nombre){
         Meta meta = new Meta(nombre);
@@ -56,8 +52,6 @@ public class AppAhorro{
     public ArrayList<Meta> obtenerMetas(){
         return metas;
     }
-
-    // Transaccion
 
     public void asignarAhorroDirecto(double costo, String nombreMeta) {
         double ahorroTransaccion = obtenerAhorro(costo);
@@ -117,18 +111,23 @@ public class AppAhorro{
         }
     }
 
-    public void cargarMetas(String leerMeta) {
+    public void cargarMeta(String meta) {
         ArrayList<String> archivoMeta = new ArrayList<String>();
         String regex = "[^_]+";
         Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(leerMeta);
+        Matcher matcher = pattern.matcher(meta);
         while (matcher.find()) {
             archivoMeta.add(matcher.group());
         }
-        Meta meta = new Meta(archivoMeta.get(0), archivoMeta.get(1), 
-                    new Ahorro(Double.valueOf(archivoMeta.get(2))), 
-                    Boolean.valueOf(archivoMeta.get(3)));
-        metas.add(meta);
+        Meta guardarMeta = new Meta(archivoMeta.get(0), archivoMeta.get(1), 
+                    new Ahorro(Double.valueOf(archivoMeta.get(2))));
+        metas.add(guardarMeta);
+    }
+
+    public void cargarMetas(ArrayList<String> metas) {
+        for(String meta : metas) {
+            cargarMeta(meta);
+        }
     }
 
     private boolean existeMeta(String nombreMeta) {

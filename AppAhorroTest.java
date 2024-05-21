@@ -1,8 +1,14 @@
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import net.bytebuddy.asm.Advice.AssignReturned.ToArguments;
 
 public class AppAhorroTest{       
     
@@ -94,10 +100,23 @@ public class AppAhorroTest{
     }
 
     @Test
-    public void cargarMetas() {
+    public void cargarMeta() {
         AdministradorDeArchivos admArchivos = mock(AdministradorDeArchivos.class);
         when(admArchivos.leerMeta()).thenReturn("_pilfrut_Monto objetivo no asignado_50_false");
-        cuenta.cargarMetas(admArchivos.leerMeta());
+        cuenta.cargarMeta(admArchivos.leerMeta());
         assertEquals(1, cuenta.obtenerMetas().size());
+    }
+
+    @Test
+    public void cargarMetas() {
+        AdministradorDeArchivos admArchivos = mock(AdministradorDeArchivos.class);
+        ArrayList<String> metas = new ArrayList<>(Arrays.asList(
+            "_pilfrut_Monto objetivo no asignado_50_false",
+            "_vacacion_1000_500_false",
+            "_carro_50000_50000_true"
+        ));
+        when(admArchivos.leerMetas()).thenReturn(metas);
+        cuenta.cargarMetas(admArchivos.leerMetas());
+        assertEquals(3, cuenta.obtenerMetas().size());
     }
 }
