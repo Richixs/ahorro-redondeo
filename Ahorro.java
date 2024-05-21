@@ -6,6 +6,10 @@ public class Ahorro {
         this.montoAhorrado = 0.0;
     }
 
+    public Ahorro(double monto) {
+        this.montoAhorrado = monto;
+    }
+
     public void agregarAhorro(double monto) {
         this.montoAhorrado += monto;
     }

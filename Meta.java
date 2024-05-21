@@ -8,13 +8,20 @@ public class Meta{
     public Meta(String nombre){
         this.nombre = nombre;
         this.ahorrado = new Ahorro();
-        this.montoMeta = "Monto objetivo no asignado.";
+        this.montoMeta = "Monto objetivo no asignado";
         this.metaCompletado = false;
     }
 
     public Meta(String nombre, double montoMeta){
         this(nombre);
         this.montoMeta = String.valueOf(montoMeta);
+    }
+
+    public Meta(String nombre, String montoMeta, Ahorro ahorrado, boolean metaCompletado) {
+        this(nombre);
+        this.montoMeta = montoMeta;
+        this.ahorrado = ahorrado;
+        this.metaCompletado = metaCompletado;
     }
     
     public String obtenerNombreMeta(){

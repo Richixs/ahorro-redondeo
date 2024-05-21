@@ -1,4 +1,6 @@
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -89,5 +91,13 @@ public class AppAhorroTest{
         cuenta.crearMeta("vacacion", 1000);
         cuenta.depositoDirectoPorPorcentaje("vacacion", 50);
         assertEquals(500, cuenta.obtenerMeta("vacacion").obtenerAhorrado());
+    }
+
+    @Test
+    public void cargarMetas() {
+        AdministradorDeArchivos admArchivos = mock(AdministradorDeArchivos.class);
+        when(admArchivos.leerMeta()).thenReturn("_pilfrut_Monto objetivo no asignado_50_false");
+        cuenta.cargarMetas(admArchivos.leerMeta());
+        assertEquals(1, cuenta.obtenerMetas().size());
     }
 }

@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 public class AppAhorro{       
     
     private Ahorro ahorroTotal;
@@ -33,6 +35,7 @@ public class AppAhorro{
         Meta meta = new Meta(nombre, montoMeta);
         metas.add(meta);
     }
+
 
     public void definirMontoMeta(String nombreMeta, double monto){
         try {
@@ -98,6 +101,7 @@ public class AppAhorro{
     public void depositoDirecto(String nombreMeta, double montoDeposito) {
         if (montoDeposito > 0 && existeMeta(nombreMeta)) {
             obtenerMeta(nombreMeta).sumarAhorro(montoDeposito);
+            ahorroTotal.agregarAhorro(montoDeposito);
         } else {
             throw new IllegalArgumentException("Parametros introducidos no validos");
         }
@@ -105,11 +109,26 @@ public class AppAhorro{
 
     public void depositoDirectoPorPorcentaje(String nombreMeta, int porcentaje) {
         if (existeMeta(nombreMeta) && verificarPorcentaje(porcentaje) && verificarMontoMeta(nombreMeta)) {
-            obtenerMeta(nombreMeta).sumarAhorro(obtenerPorCiento(
-            Double.valueOf(obtenerMeta(nombreMeta).obtenerMontoMeta()), porcentaje));
+            Double montoDeposito = obtenerPorCiento(Double.valueOf(obtenerMeta(nombreMeta).obtenerMontoMeta()), porcentaje);
+            obtenerMeta(nombreMeta).sumarAhorro(montoDeposito);
+            ahorroTotal.agregarAhorro(montoDeposito);
         } else {
             throw new IllegalArgumentException("Parametros introducidos no validos");
         }
+    }
+
+    public void cargarMetas(String leerMeta) {
+        ArrayList<String> archivoMeta = new ArrayList<String>();
+        String regex = "[^_]+";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(leerMeta);
+        while (matcher.find()) {
+            archivoMeta.add(matcher.group());
+        }
+        Meta meta = new Meta(archivoMeta.get(0), archivoMeta.get(1), 
+                    new Ahorro(Double.valueOf(archivoMeta.get(2))), 
+                    Boolean.valueOf(archivoMeta.get(3)));
+        metas.add(meta);
     }
 
     private boolean existeMeta(String nombreMeta) {
@@ -125,6 +144,6 @@ public class AppAhorro{
     }
 
     private boolean verificarMontoMeta(String nombreMeta) {
-        return !obtenerMeta(nombreMeta).obtenerMontoMeta().equals("Monto objetivo no asignado.");
+        return !obtenerMeta(nombreMeta).obtenerMontoMeta().equals("Monto objetivo no asignado");
     }
 }
