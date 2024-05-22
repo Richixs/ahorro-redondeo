@@ -4,7 +4,7 @@ import java.util.regex.Pattern;
 public class AppAhorro{       
     
     private Ahorro ahorroTotal;
-    ArrayList<Meta> metas;
+    private ArrayList<Meta> metas;
     
     public AppAhorro(){
         ahorroTotal = new Ahorro();
