@@ -58,20 +58,6 @@ public class AppAhorroTest{
     }
 
     @Test
-    public void asignarPorcentajeAhorro() {
-        cuenta.crearMeta("vacacion");
-        cuenta.crearMeta("regalo-cumpleanios");
-        cuenta.crearMeta("chaifon");
-        assertEquals(0, cuenta.obtenerMeta("vacacion").obtenerAhorrado());
-        assertEquals(0, cuenta.obtenerMeta("regalo-cumpleanios").obtenerAhorrado());
-        assertEquals(0, cuenta.obtenerMeta("chaifon").obtenerAhorrado());
-        cuenta.asignarPorcentajeAhorro(6.5, "chaifon", 50);
-        assertEquals(0.125, cuenta.obtenerMeta("vacacion").obtenerAhorrado());
-        assertEquals(0.125, cuenta.obtenerMeta("regalo-cumpleanios").obtenerAhorrado());
-        assertEquals(0.25, cuenta.obtenerMeta("chaifon").obtenerAhorrado());
-    }
-
-    @Test
     public void asignarPorcentajeEquitativoMetas() {
         cuenta.crearMeta("vacacion");
         cuenta.crearMeta("cumpleanios");

@@ -45,7 +45,7 @@ public class AdministradorDeArchivos {
     }
 
     public void leerArchivo() {
-        try (BufferedReader br = new BufferedReader(new FileReader("./data/meta.txt"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader("./data/metas.txt"))) {
             String linea;
             while ((linea = br.readLine()) != null) {
                 metas.add(linea);

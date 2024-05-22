@@ -12,8 +12,10 @@ public class AppAhorro{
         ahorroTotal = new Ahorro();
         metas = new ArrayList<Meta>();
         admArchivos = new AdministradorDeArchivos();
-        admArchivos.leerArchivo();
-        cargarMetas(admArchivos.obtenerMetasGuardadas());
+        if (admArchivos.existeArchivoMeta()) {
+            admArchivos.leerArchivo();
+            cargarMetas(admArchivos.obtenerMetasGuardadas());
+        }
     }
     
     public double obtenerAhorro(double costoProducto){        
@@ -37,7 +39,7 @@ public class AppAhorro{
         if (!admArchivos.existeArchivoMeta()) {
             admArchivos.crearArchivo();
         }
-        String metaString = "_" + meta.obtenerNombreMeta() + "_" + meta.obtenerMontoMeta() + "_" + meta.obtenerAhorrado();
+        String metaString = "_" + meta.obtenerNombreMeta() + "_" + meta.obtenerMontoMeta() + "_" + Math.round((meta.obtenerAhorrado()) * 100d) / 100d + "_" + " " + obtenerPorcentaje(meta.obtenerAhorrado(), meta.obtenerMontoMeta()) + "%";
         admArchivos.añadirTextoMetas(metaString);
     }
 
@@ -74,30 +76,6 @@ public class AppAhorro{
         obtenerMeta(nombreMeta).sumarAhorro(ahorroTransaccion);
     }
 
-    public void asignarPorcentajeAhorro(double costo, String nombreMeta, int porcentaje) {
-        try {
-            if (verificarPorcentaje(porcentaje)) {
-                double ahorroTransaccion = obtenerAhorro(costo);
-                this.ahorroTotal.agregarAhorro(ahorroTransaccion);
-                double metaAhorro = obtenerPorCiento(ahorroTransaccion, porcentaje);
-                obtenerMeta(nombreMeta).sumarAhorro(metaAhorro);
-                ahorroTransaccion -= metaAhorro;
-                double ahorroRepartir = ahorroTransaccion/(obtenerMetas().size()-1);
-                for (Meta meta : obtenerMetas()) {
-                    if (!meta.obtenerNombreMeta().equals(nombreMeta)) {
-                        meta.sumarAhorro(ahorroRepartir);
-                    }
-                }
-            } else if (porcentaje == 100) {
-                asignarAhorroDirecto(costo, nombreMeta);
-            } else {
-                throw new IllegalArgumentException("Chale no se va a poder...");
-            }
-        } catch (IllegalArgumentException exception) {
-            System.out.println(exception.getMessage());
-        }
-    }
-
     public void asignarPorcentajeEquitativo(double costo) {
         double ahorroTransaccion = obtenerAhorro(costo);
         this.ahorroTotal.agregarAhorro(ahorroTransaccion);
@@ -117,12 +95,16 @@ public class AppAhorro{
     }
 
     public void depositoDirectoPorPorcentaje(String nombreMeta, int porcentaje) {
-        if (existeMeta(nombreMeta) && verificarPorcentaje(porcentaje) && verificarMontoMeta(nombreMeta)) {
-            Double montoDeposito = obtenerPorCiento(Double.valueOf(obtenerMeta(nombreMeta).obtenerMontoMeta()), porcentaje);
-            obtenerMeta(nombreMeta).sumarAhorro(montoDeposito);
-            ahorroTotal.agregarAhorro(montoDeposito);
-        } else {
-            throw new IllegalArgumentException("Parametros introducidos no validos");
+        try {
+            if (existeMeta(nombreMeta) && verificarPorcentaje(porcentaje) && verificarMontoMeta(nombreMeta)) {
+                Double montoDeposito = obtenerPorCiento(Double.valueOf(obtenerMeta(nombreMeta).obtenerMontoMeta()), porcentaje);
+                obtenerMeta(nombreMeta).sumarAhorro(montoDeposito);
+                ahorroTotal.agregarAhorro(montoDeposito);
+            } else {
+                throw new IllegalArgumentException("Parametros introducidos no validos");
+            }
+        } catch (Exception exceptiondx) {
+            System.out.println(exceptiondx.getMessage());
         }
     }
 
@@ -140,7 +122,7 @@ public class AppAhorro{
 
     private void guardarMetas(ArrayList<Meta> metas) {
         for(Meta meta : metas) {
-            escribirMeta(meta);;
+            escribirMeta(meta);
         }
     }
 
@@ -154,6 +136,19 @@ public class AppAhorro{
 
     private double obtenerPorCiento(double monto, int porcentaje) {
         return (monto*porcentaje)/100;
+    }
+
+    private int obtenerPorcentaje(double montoAhorrado, String montoMeta) {
+        int porcentaje = 0;
+        try {
+            if (!montoMeta.equals("Monto objetivo no asignado")) {
+                double monto = Double.parseDouble(montoMeta);
+                porcentaje = (int)((montoAhorrado*100)/monto);
+            }
+        } catch (Exception exceptionxd) {
+            System.out.println(exceptionxd.getMessage());
+        }
+        return porcentaje;
     }
 
     private boolean verificarMontoMeta(String nombreMeta) {
