@@ -1,14 +1,19 @@
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 public class AppAhorro{       
     
     private Ahorro ahorroTotal;
     private ArrayList<Meta> metas;
+    private AdministradorDeArchivos admArchivos;
     
     public AppAhorro(){
         ahorroTotal = new Ahorro();
         metas = new ArrayList<Meta>();
+        admArchivos = new AdministradorDeArchivos();
+        admArchivos.leerArchivo();
+        cargarMetas(admArchivos.obtenerMetasGuardadas());
     }
     
     public double obtenerAhorro(double costoProducto){        
@@ -25,11 +30,21 @@ public class AppAhorro{
     public void crearMeta(String nombre){
         Meta meta = new Meta(nombre);
         metas.add(meta);
+        escribirMeta(meta);
+    }
+
+    private void escribirMeta(Meta meta) {
+        if (!admArchivos.existeArchivoMeta()) {
+            admArchivos.crearArchivo();
+        }
+        String metaString = "_" + meta.obtenerNombreMeta() + "_" + meta.obtenerMontoMeta() + "_" + meta.obtenerAhorrado();
+        admArchivos.añadirTextoMetas(metaString);
     }
 
     public void crearMeta(String nombre, double montoMeta) {
         Meta meta = new Meta(nombre, montoMeta);
         metas.add(meta);
+        escribirMeta(meta);
     }
 
 
@@ -111,22 +126,21 @@ public class AppAhorro{
         }
     }
 
-    public void cargarMeta(String meta) {
-        ArrayList<String> archivoMeta = new ArrayList<String>();
-        String regex = "[^_]+";
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(meta);
-        while (matcher.find()) {
-            archivoMeta.add(matcher.group());
-        }
-        Meta guardarMeta = new Meta(archivoMeta.get(0), archivoMeta.get(1), 
-                    new Ahorro(Double.valueOf(archivoMeta.get(2))));
-        metas.add(guardarMeta);
+    public void guardar() {
+        admArchivos.eliminarArchivoMeta();
+        admArchivos.crearArchivo();
+        guardarMetas(metas);
     }
 
     public void cargarMetas(ArrayList<String> metas) {
         for(String meta : metas) {
             cargarMeta(meta);
+        }
+    }
+
+    private void guardarMetas(ArrayList<Meta> metas) {
+        for(Meta meta : metas) {
+            escribirMeta(meta);;
         }
     }
 
@@ -144,5 +158,18 @@ public class AppAhorro{
 
     private boolean verificarMontoMeta(String nombreMeta) {
         return !obtenerMeta(nombreMeta).obtenerMontoMeta().equals("Monto objetivo no asignado");
+    }
+
+    private void cargarMeta(String meta) {
+        ArrayList<String> archivoMeta = new ArrayList<String>();
+        String regex = "[^_]+";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(meta);
+        while (matcher.find()) {
+            archivoMeta.add(matcher.group());
+        }
+        Meta guardarMeta = new Meta(archivoMeta.get(0), archivoMeta.get(1), 
+                    new Ahorro(Double.valueOf(archivoMeta.get(2))));
+        metas.add(guardarMeta);
     }
 }

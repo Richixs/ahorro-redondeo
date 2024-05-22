@@ -100,23 +100,15 @@ public class AppAhorroTest{
     }
 
     @Test
-    public void cargarMeta() {
-        AdministradorDeArchivos admArchivos = mock(AdministradorDeArchivos.class);
-        when(admArchivos.leerMeta()).thenReturn("_pilfrut_Monto objetivo no asignado_50_false");
-        cuenta.cargarMeta(admArchivos.leerMeta());
-        assertEquals(1, cuenta.obtenerMetas().size());
-    }
-
-    @Test
     public void cargarMetas() {
         AdministradorDeArchivos admArchivos = mock(AdministradorDeArchivos.class);
         ArrayList<String> metas = new ArrayList<>(Arrays.asList(
-            "_pilfrut_Monto objetivo no asignado_50_false",
-            "_vacacion_1000_500_false",
-            "_carro_50000_50000_true"
+            "_pilfrut_Monto objetivo no asignado_50",
+            "_vacacion_1000_500",
+            "_carro_50000_50000"
         ));
-        when(admArchivos.leerMetas()).thenReturn(metas);
-        cuenta.cargarMetas(admArchivos.leerMetas());
+        when(admArchivos.obtenerMetasGuardadas()).thenReturn(metas);
+        cuenta.cargarMetas(admArchivos.obtenerMetasGuardadas());
         assertEquals(3, cuenta.obtenerMetas().size());
     }
 }
